@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to IT Quiz</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Use Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .option-button-label {
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* --- SELECTION STYLES (before submit) --- */
+        /* Handle hover */
+        form:not([data-submitted="true"]) .option-button-label:hover {
+            background-color: #f9fafb; /* gray-50 */
+        }
+        
+        /* Style for a selected option (from user screenshot) */
+        .selected-option-label {
+            border-color: #2563eb; /* blue-600 */
+            background-color: #eff6ff; /* blue-50 */
+        }
+        .selected-option-label .custom-radio {
+            border-color: #2563eb; /* blue-600 */
+        }
+        .selected-option-label .custom-radio > span {
+            opacity: 1;
+        }
+        .selected-option-label > span:last-of-type { /* The text */
+            color: #1e40af; /* blue-900 */
+            font-weight: 500;
+        }
+
+        /* --- QUIZ PAGE - FEEDBACK STYLES (after submit) --- */
+
+        /* Style for a correct answer */
+        .correct-answer-style {
+            background-color: #d1fae5; /* green-100 */
+            border-color: #10b981; /* green-500 */
+        }
+        .correct-answer-style .custom-radio {
+            border-color: #10b981; /* green-500 */
+            background-color: #10b981; /* green-500 */
+        }
+        .correct-answer-style .custom-radio > span {
+            /* White checkmark */
+            width: 0.75rem; /* w-3 */
+            height: 0.75rem; /* h-3 */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath fill-rule='evenodd' d='M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z' clip-rule='evenodd' /%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-color: transparent;
+            opacity: 1;
+        }
+        .correct-answer-style > span:last-of-type {
+            color: #065f46; /* green-900 */
+            font-weight: 500;
+        }
+
+        /* Style for an incorrect answer */
+        .incorrect-answer-style {
+            background-color: #fee2e2; /* red-100 */
+            border-color: #ef4444; /* red-500 */
+        }
+        .incorrect-answer-style .custom-radio {
+            border-color: #ef4444; /* red-500 */
+            background-color: #ef4444; /* red-500 */
+        }
+        .incorrect-answer-style .custom-radio > span {
+            /* White X */
+            width: 0.75rem; /* w-3 */
+            height: 0.75rem; /* h-3 */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath d='M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z' /%3E%3C/svg%3E");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-color: transparent;
+            opacity: 1;
+        }
+        .incorrect-answer-style > span:last-of-type {
+            color: #991b1b; /* red-900 */
+            font-weight: 500;
+        }
+
+        /* --- RESULTS PAGE - STYLES --- */
+        .results-question-incorrect {
+            background-color: #fee2e2; /* red-100 */
+            border-left-color: #ef4444; /* red-500 */
+        }
+        .results-question-correct {
+            background-color: #f0fdf4; /* green-50 */
+            border-left-color: #22c55e; /* green-500 */
+        }
+        .results-answer-review {
+            background-color: #fefce8; /* yellow-50 */
+        }
+
+    </style>
+</head>
+<body class="bg-blue-50 min-h-screen antialiased">
+
+    <!-- Header -->
+    <nav class="bg-white shadow-md w-full sticky top-0 z-40">
+        <div class="container mx-auto max-w-4xl px-4 sm:px-8 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <!-- SVG Icon -->
+                <svg class="w-10 h-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-1.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25Z" />
+                </svg>
+                <h1 class="text-2xl font-bold text-blue-700">Introduction to IT Quiz</h1>
+            </div>
+            <p class="text-lg text-gray-600 hidden sm:block">Test Your Knowledge: Chapters 1 & 2</p>
+        </div>
+    </nav>
+
+    <div class="container mx-auto max-w-3xl p-4 sm:p-8 mt-8">
+
+        <!-- Main Quiz Form -->
+        <form id="quizForm" class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg space-y-12">
+
+            <!-- Chapter 1 Section -->
+            <section id="chapter1" class="space-y-6">
+                <!-- Chapter 1 Summary -->
+                <div class="border-b-2 border-blue-200 pb-4">
+                    <h2 class="text-3xl font-semibold text-blue-600 mb-4">Chapter 1: Overview of Computer</h2>
+                    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                        <h3 class="font-bold text-lg text-blue-800 mb-2">Chapter Summary</h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            A computer is an electronic device that processes <strong>data</strong> (unprocessed items like text and numbers) into <strong>information</strong> (processed, useful data). This process follows the information processing cycle: input, processing, output, and storage. While computers offer significant <strong>advantages</strong> like speed, reliability, and vast storage, they also present <strong>disadvantages</strong> such as health risks, privacy concerns, and environmental impact. A complete <strong>information system</strong> involves five elements: hardware, software, data, people, and procedures. Computers are now integral to almost every part of society, including education, finance, government, health care, and manufacturing.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Chapter 1 Questions -->
+                <h3 class="text-2xl font-semibold text-gray-800">Chapter 1 Quiz: Multiple Choice</h3>
+
+                <!-- C1-MCQ 1 -->
+                <div class="space-y-3" id="q-c1_mcq_1" data-question-text="1. What is the correct order of the information processing cycle?">
+                    <p class="text-lg font-medium text-gray-900">1. What is the correct order of the information processing cycle?</p>
+                    <div class="space-y-2" data-group="c1_mcq_1">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_1" value="A" class="sr-only" data-option-text="A) Input, Output, Processing, Storage">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Input, Output, Processing, Storage</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_1" value="B" class="sr-only" data-option-text="B) Input, Processing, Output, Storage">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Input, Processing, Output, Storage</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_1" value="C" class="sr-only" data-option-text="C) Processing, Storage, Input, Output">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Processing, Storage, Input, Output</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_1" value="D" class="sr-only" data-option-text="D) Storage, Processing, Output, Input">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Storage, Processing, Output, Input</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C1-MCQ 2 -->
+                <div class="space-y-3" id="q-c1_mcq_2" data-question-text="2. Which of the following is an *advantage* of using computers?">
+                    <p class="text-lg font-medium text-gray-900">2. Which of the following is an *advantage* of using computers?</p>
+                    <div class="space-y-2" data-group="c1_mcq_2">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_2" value="A" class="sr-only" data-option-text="A) Health Risks">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Health Risks</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_2" value="B" class="sr-only" data-option-text="B) Impact on Labor Force">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Impact on Labor Force</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_2" value="C" class="sr-only" data-option-text="C) Violation of Privacy">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Violation of Privacy</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_2" value="D" class="sr-only" data-option-text="D) Reliability">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Reliability</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C1-MCQ 3 -->
+                <div class="space-y-3" id="q-c1_mcq_3" data-question-text="3. A class average, calculated from all student test scores, is an example of:">
+                    <p class="text-lg font-medium text-gray-900">3. A class average, calculated from all student test scores, is an example of:</p>
+                    <div class="space-y-2" data-group="c1_mcq_3">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_3" value="A" class="sr-only" data-option-text="A) Data">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Data</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_3" value="B" class="sr-only" data-option-text="B) Information">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Information</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_3" value="C" class="sr-only" data-option-text="C) A Procedure">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) A Procedure</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_3" value="D" class="sr-only" data-option-text="D) Hardware">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Hardware</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C1-MCQ 4 -->
+                <div class="space-y-3" id="q-c1_mcq_4" data-question-text="4. Prolonged computer use leading to injuries or disorders of the hands, eyes, and back is an example of which disadvantage?">
+                    <p class="text-lg font-medium text-gray-900">4. Prolonged computer use leading to injuries or disorders of the hands, eyes, and back is an example of which disadvantage?</p>
+                    <div class="space-y-2" data-group="c1_mcq_4">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_4" value="A" class="sr-only" data-option-text="A) Impact on Labor Force">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Impact on Labor Force</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_4" value="B" class="sr-only" data-option-text="B) Violation of Privacy">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Violation of Privacy</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_4" value="C" class="sr-only" data-option-text="C) Health Risks">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Health Risks</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_4" value="D" class="sr-only" data-option-text="D) Public Safety">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Public Safety</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C1-MCQ 5 -->
+                <div class="space-y-3" id="q-c1_mcq_5" data-question-text="5. A computer is defined as an electronic device operating under the control of:">
+                    <p class="text-lg font-medium text-gray-900">5. A computer is defined as an electronic device operating under the control of:</p>
+                    <div class="space-y-2" data-group="c1_mcq_5">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_5" value="A" class="sr-only" data-option-text="A) Instructions stored in its own memory">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Instructions stored in its own memory</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_5" value="B" class="sr-only" data-option-text="B) A remote server">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) A remote server</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_5" value="C" class="sr-only" data-option-text="C) The user's direct commands only">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) The user's direct commands only</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_5" value="D" class="sr-only" data-option-text="D) A hard-wired electrical circuit">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) A hard-wired electrical circuit</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C1-MCQ 6 -->
+                <div class="space-y-3" id="q-c1_mcq_6" data-question-text="6. In an information system, 'users' are part of which element?">
+                    <p class="text-lg font-medium text-gray-900">6. In an information system, 'users' are part of which element?</p>
+                    <div class="space-y-2" data-group="c1_mcq_6">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_6" value="A" class="sr-only" data-option-text="A) Hardware">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Hardware</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_6" value="B" class="sr-only" data-option-text="B) Software">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Software</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_6" value="C" class="sr-only" data-option-text="C) People">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) People</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_6" value="D" class="sr-only" data-option-text="D) Data">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Data</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C1-MCQ 7 -->
+                <div class="space-y-3" id="q-c1_mcq_7" data-question-text="7. Using a computer to access account balances and pay bills online is an example of computers in which societal sector?">
+                    <p class="text-lg font-medium text-gray-900">7. Using a computer to access account balances and pay bills online is an example of computers in which societal sector?</p>
+                    <div class="space-y-2" data-group="c1_mcq_7">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_7" value="A" class="sr-only" data-option-text="A) Finance">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Finance</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_7" value="B" class="sr-only" data-option-text="B) Government">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Government</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_7" value="C" class="sr-only" data-option-text="C) Health Care">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Health Care</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_7" value="D" class="sr-only" data-option-text="D) Publishing">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Publishing</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C1-MCQ 8 -->
+                <div class="space-y-3" id="q-c1_mcq_8" data-question-text="8. Which of the following is NOT one of the five elements of an information system?">
+                    <p class="text-lg font-medium text-gray-900">8. Which of the following is NOT one of the five elements of an information system?</p>
+                    <div class="space-y-2" data-group="c1_mcq_8">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_8" value="A" class="sr-only" data-option-text="A) Hardware">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Hardware</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_8" value="B" class="sr-only" data-option-text="B) Procedures">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Procedures</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_8" value="C" class="sr-only" data-option-text="C) Data">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Data</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_8" value="D" class="sr-only" data-option-text="D) Networks">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Networks</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- C1-MCQ 9 -->
+                <div class="space-y-3" id="q-c1_mcq_9" data-question-text="9. What does 'CAM' stand for?">
+                    <p class="text-lg font-medium text-gray-900">9. What does "CAM" stand for?</p>
+                    <div class="space-y-2" data-group="c1_mcq_9">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_9" value="A" class="sr-only" data-option-text="A) Computer-Aided Publishing">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Computer-Aided Publishing</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_9" value="B" class="sr-only" data-option-text="B) Computer-Aided Manufacturing">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Computer-Aided Manufacturing</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_9" value="C" class="sr-only" data-option-text="C) Computer-Assisted Management">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Computer-Assisted Management</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_9" value="D" class="sr-only" data-option-text="D) Computer-Aided Modeling">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Computer-Aided Modeling</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C1-MCQ 10 -->
+                <div class="space-y-3" id="q-c1_mcq_10" data-question-text="10. A collection of unprocessed items, which can include text, numbers, images, audio, and video, is known as:">
+                    <p class="text-lg font-medium text-gray-900">10. A collection of unprocessed items, which can include text, numbers, images, audio, and video, is known as:</p>
+                    <div class="space-y-2" data-group="c1_mcq_10">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_10" value="A" class="sr-only" data-option-text="A) Data">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Data</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_10" value="B" class="sr-only" data-option-text="B) Information">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Information</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_10" value="C" class="sr-only" data-option-text="C) Output">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Output</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_mcq_10" value="D" class="sr-only" data-option-text="D) Software">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Software</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <h3 class="text-2xl font-semibold text-gray-800 pt-6">Chapter 1 Quiz: True / False</h3>
+                
+                <!-- C1-TF 1 -->
+                <div class="space-y-3" id="q-c1_tf_1" data-question-text="1. True or False: 'Data' is a collection of unprocessed items.">
+                    <p class="text-lg font-medium text-gray-900">1. True or False: "Data" is a collection of unprocessed items.</p>
+                    <div class="flex gap-4" data-group="c1_tf_1">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_1" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_1" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C1-TF 2 -->
+                <div class="space-y-3" id="q-c1_tf_2" data-question-text="2. True or False: The five elements of an information system are Hardware, Software, Data, People, and Procedures.">
+                    <p class="text-lg font-medium text-gray-900">2. True or False: The five elements of an information system are Hardware, Software, Data, People, and Procedures.</p>
+                    <div class="flex gap-4" data-group="c1_tf_2">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_2" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_2" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- C1-TF 3 -->
+                <div class="space-y-3" id="q-c1_tf_3" data-question-text="3. True or False: A computer can accept data, process it, produce results, and store the results for future use.">
+                    <p class="text-lg font-medium text-gray-900">3. True or False: A computer can accept data, process it, produce results, and store the results for future use.</p>
+                    <div class="flex gap-4" data-group="c1_tf_3">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_3" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_3" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- C1-TF 4 -->
+                <div class="space-y-3" id="q-c1_tf_4" data-question-text="4. True or False: 'Information' is a collection of unprocessed items.">
+                    <p class="text-lg font-medium text-gray-900">4. True or False: "Information" is a collection of unprocessed items.</p>
+                    <div class="flex gap-4" data-group="c1_tf_4">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_4" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_4" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- C1-TF 5 -->
+                <div class="space-y-3" id="q-c1_tf_5" data-question-text="5. True or False: Speed is a disadvantage of using computers.">
+                    <p class="text-lg font-medium text-gray-900">5. True or False: Speed is a disadvantage of using computers.</p>
+                    <div class="flex gap-4" data-group="c1_tf_5">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_5" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_5" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- C1-TF 6 -->
+                <div class="space-y-3" id="q-c1_tf_6" data-question-text="6. True or False: When discarded in landfills, computers can release toxic materials.">
+                    <p class="text-lg font-medium text-gray-900">6. True or False: When discarded in landfills, computers can release toxic materials.</p>
+                    <div class="flex gap-4" data-group="c1_tf_6">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_6" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_6" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- C1-TF 7 -->
+                <div class="space-y-3" id="q-c1_tf_7" data-question-text="7. True or False: CAM (Computer-Aided Manufacturing) is primarily used in the publishing industry.">
+                    <p class="text-lg font-medium text-gray-900">7. True or False: CAM (Computer-Aided Manufacturing) is primarily used in the publishing industry.</p>
+                    <div class="flex gap-4" data-group="c1_tf_7">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_7" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_7" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- C1-TF 8 -->
+                <div class="space-y-3" id="q-c1_tf_8" data-question-text="8. True or False: An onboard navigation system in a car is an example of computers in the travel industry.">
+                    <p class="text-lg font-medium text-gray-900">8. True or False: An onboard navigation system in a car is an example of computers in the travel industry.</p>
+                    <div class="flex gap-4" data-group="c1_tf_8">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_8" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_8" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- C1-TF 9 -->
+                <div class="space-y-3" id="q-c1_tf_9" data-question-text="9. True or False: 'Consistency' means that given the same input, a computer will produce different results each time.">
+                    <p class="text-lg font-medium text-gray-900">9. True or False: 'Consistency' means that given the same input, a computer will produce different results each time.</p>
+                    <div class="flex gap-4" data-group="c1_tf_9">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_9" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_9" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- C1-TF 10 -->
+                <div class="space-y-3" id="q-c1_tf_10" data-question-text="10. True or False: Taking a class on the Web is given as an example of computers in education.">
+                    <p class="text-lg font-medium text-gray-900">10. True or False: Taking a class on the Web is given as an example of computers in education.</p>
+                    <div class="flex gap-4" data-group="c1_tf_10">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_10" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c1_tf_10" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chapter 2 Section -->
+            <section id="chapter2" class="space-y-6">
+                <!-- Chapter 2 Summary -->
+                <div class="border-b-2 border-blue-200 pb-4">
+                    <h2 class="text-3xl font-semibold text-blue-600 mb-4">Chapter 2: Computer Components</h2>
+                    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                        <h3 class="font-bold text-lg text-blue-800 mb-2">Chapter Summary</h3>
+                        <p class="text-gray-700 leading-relaxed">
+                            A computer's physical parts, which you can see and touch, are called <strong>hardware</strong>. The instructions that tell the hardware what to do are called <strong>software</strong>. There are five main categories of hardware components: <strong>input devices</strong> (e.g., keyboard, mouse), <strong>output devices</strong> (e.g., monitor, printer), the <strong>system unit</strong> (which houses the processor and memory), <strong>storage devices</strong> (e.g., hard disk, USB drive), and <strong>communications devices</strong> (e.g., modem). Software is broadly divided into two types: <strong>system software</strong> (like an Operating System - Windows, macOS) which controls the computer, and <strong>application software</strong> (like a web browser or word processor) which allows users to perform specific tasks.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Chapter 2 Questions -->
+                <h3 class="text-2xl font-semibold text-gray-800">Chapter 2 Quiz: Multiple Choice</h3>
+
+                <!-- C2-MCQ 1 -->
+                <div class="space-y-3" id="q-c2_mcq_1" data-question-text="1. The physical parts of a computer you can see and touch are called:">
+                    <p class="text-lg font-medium text-gray-900">1. The physical parts of a computer you can see and touch are called:</p>
+                    <div class="space-y-2" data-group="c2_mcq_1">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_1" value="A" class="sr-only" data-option-text="A) Software">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Software</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_1" value="B" class="sr-only" data-option-text="B) Hardware">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Hardware</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_1" value="C" class="sr-only" data-option-text="C) Programs">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Programs</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_1" value="D" class="sr-only" data-option-text="D) Applications">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Applications</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C2-MCQ 2 -->
+                <div class="space-y-3" id="q-c2_mcq_2" data-question-text="2. Which of these is an *input* device?">
+                    <p class="text-lg font-medium text-gray-900">2. Which of these is an *input* device?</p>
+                    <div class="space-y-2" data-group="c2_mcq_2">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_2" value="A" class="sr-only" data-option-text="A) Monitor">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Monitor</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_2" value="B" class="sr-only" data-option-text="B) Printer">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Printer</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_2" value="C" class="sr-only" data-option-text="C) Keyboard">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Keyboard</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_2" value="D" class="sr-only" data-option-text="D) Speakers">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Speakers</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C2-MCQ 3 -->
+                <div class="space-y-3" id="q-c2_mcq_3" data-question-text="3. Windows, macOS, and Linux are examples of:">
+                    <p class="text-lg font-medium text-gray-900">3. Windows, macOS, and Linux are examples of:</p>
+                    <div class="space-y-2" data-group="c2_mcq_3">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_3" value="A" class="sr-only" data-option-text="A) Application Software">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Application Software</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_3" value="B" class="sr-only" data-option-text="B) Utility Programs">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Utility Programs</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_3" value="C" class="sr-only" data-option-text="C) Operating Systems">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Operating Systems</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_3" value="D" class="sr-only" data-option-text="D) Hardware">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Hardware</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- C2-MCQ 4 -->
+                <div class="space-y-3" id="q-c2_mcq_4" data-question-text="4. What is the fastest, most powerful category of computer?">
+                    <p class="text-lg font-medium text-gray-900">4. What is the fastest, most powerful category of computer?</p>
+                    <div class="space-y-2" data-group="c2_mcq_4">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_4" value="A" class="sr-only" data-option-text="A) Mainframe">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Mainframe</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_4" value="B" class="sr-only" data-option-text="B) Server">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Server</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_4" value="C" class="sr-only" data-option-text="C) Supercomputer">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Supercomputer</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_4" value="D" class="sr-only" data-option-text="D) Personal Computer">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Personal Computer</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- C2-MCQ 5 -->
+                <div class="space-y-3" id="q-c2_mcq_5" data-question-text="5. A monitor, printer, and speakers are all examples of:">
+                    <p class="text-lg font-medium text-gray-900">5. A monitor, printer, and speakers are all examples of:</p>
+                    <div class="space-y-2" data-group="c2_mcq_5">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_5" value="A" class="sr-only" data-option-text="A) Input Devices">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Input Devices</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_5" value="B" class="sr-only" data-option-text="B) Output Devices">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Output Devices</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_5" value="C" class="sr-only" data-option-text="C) Storage Devices">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Storage Devices</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_5" value="D" class="sr-only" data-option-text="D) System Units">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) System Units</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- C2-MCQ 6 -->
+                <div class="space-y-3" id="q-c2_mcq_6" data-question-text="6. A special-purpose computer that functions as a component in a larger product, such as a car, is called an:">
+                    <p class="text-lg font-medium text-gray-900">6. A special-purpose computer that functions as a component in a larger product, such as a car, is called an:</p>
+                    <div class="space-y-2" data-group="c2_mcq_6">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_6" value="A" class="sr-only" data-option-text="A) Embedded Computer">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Embedded Computer</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_6" value="B" class="sr-only" data-option-text="B) Game Console">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Game Console</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_6" value="C" class="sr-only" data-option-text="C) Mainframe">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Mainframe</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_6" value="D" class="sr-only" data-option-text="D) Mobile Device">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Mobile Device</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- C2-MCQ 7 -->
+                <div class="space-y-3" id="q-c2_mcq_7" data-question-text="7. Which category of computer controls access to hardware, software, and other resources on a network?">
+                    <p class="text-lg font-medium text-gray-900">7. Which category of computer controls access to hardware, software, and other resources on a network?</p>
+                    <div class="space-y-2" data-group="c2_mcq_7">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_7" value="A" class="sr-only" data-option-text="A) Server">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Server</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_7" value="B" class="sr-only" data-option-text="B) Mainframe">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Mainframe</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_7" value="C" class="sr-only" data-option-text="C) Supercomputer">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Supercomputer</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_7" value="D" class="sr-only" data-option-text="D) Embedded Computer">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Embedded Computer</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C2-MCQ 8 -->
+                <div class="space-y-3" id="q-c2_mcq_8" data-question-text="8. What hardware component conveys information to one or more people?">
+                    <p class="text-lg font-medium text-gray-900">8. What hardware component conveys information to one or more people?</p>
+                    <div class="space-y-2" data-group="c2_mcq_8">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_8" value="A" class="sr-only" data-option-text="A) Input Device">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Input Device</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_8" value="B" class="sr-only" data-option-text="B) Output Device">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Output Device</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_8" value="C" class="sr-only" data-option-text="C) Storage Device">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Storage Device</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_8" value="D" class="sr-only" data-option-text="D) Communications Device">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Communications Device</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C2-MCQ 9 -->
+                <div class="space-y-3" id="q-c2_mcq_9" data-question-text="9. A word processor or spreadsheet program is what type of software?">
+                    <p class="text-lg font-medium text-gray-900">9. A word processor or spreadsheet program is what type of software?</p>
+                    <div class="space-y-2" data-group="c2_mcq_9">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_9" value="A" class="sr-only" data-option-text="A) Operating System">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Operating System</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_9" value="B" class="sr-only" data-option-text="B) System Software">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) System Software</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_9" value="C" class="sr-only" data-option-text="C) Application Software">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Application Software</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_9" value="D" class="sr-only" data-option-text="D) Utility Program">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Utility Program</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C2-MCQ 10 -->
+                <div class="space-y-3" id="q-c2_mcq_10" data-question-text="10. What type of device enables a computer to send and receive data, instructions, and information?">
+                    <p class="text-lg font-medium text-gray-900">10. What type of device enables a computer to send and receive data, instructions, and information?</p>
+                    <div class="space-y-2" data-group="c2_mcq_10">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_10" value="A" class="sr-only" data-option-text="A) Storage Device">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>A) Storage Device</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_10" value="B" class="sr-only" data-option-text="B) Output Device">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>B) Output Device</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_10" value="C" class="sr-only" data-option-text="C) Communications Device">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>C) Communications Device</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_mcq_10" value="D" class="sr-only" data-option-text="D) Input Device">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>D) Input Device</span>
+                        </label>
+                    </div>
+                </div>
+
+                <h3 class="text-2xl font-semibold text-gray-800 pt-6">Chapter 2 Quiz: True / False</h3>
+
+                <!-- C2-TF 1 -->
+                <div class="space-y-3" id="q-c2_tf_1" data-question-text="1. True or False: A printer is an example of an input device.">
+                    <p class="text-lg font-medium text-gray-900">1. True or False: A printer is an example of an input device.</p>
+                    <div class="flex gap-4" data-group="c2_tf_1">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_1" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_1" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C2-TF 2 -->
+                <div class="space-y-3" id="q-c2_tf_2" data-question-text="2. True or False: A web browser is an example of application software.">
+                    <p class="text-lg font-medium text-gray-900">2. True or False: A web browser is an example of application software.</p>
+                    <div class="flex gap-4" data-group="c2_tf_2">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_2" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_2" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C2-TF 3 -->
+                <div class="space-y-3" id="q-c2_tf_3" data-question-text="3. True or False: The System Unit is a peripheral device, like a printer.">
+                    <p class="text-lg font-medium text-gray-900">3. True or False: The System Unit is a peripheral device, like a printer.</p>
+                    <div class="flex gap-4" data-group="c2_tf_3">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_3" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_3" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- C2-TF 4 -->
+                <div class="space-y-3" id="q-c2_tf_4" data-question-text="4. True or False: Software refers to the instructions that tell the hardware what to do.">
+                    <p class="text-lg font-medium text-gray-900">4. True or False: Software refers to the instructions that tell the hardware what to do.</p>
+                    <div class="flex gap-4" data-group="c2_tf_4">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_4" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_4" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C2-TF 5 -->
+                <div class="space-y-3" id="q-c2_tf_5" data-question-text="5. True or False: A modem is an example of a storage device.">
+                    <p class="text-lg font-medium text-gray-900">5. True or False: A modem is an example of a storage device.</p>
+                    <div class="flex gap-4" data-group="c2_tf_5">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_5" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_5" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C2-TF 6 -->
+                <div class="space-y-3" id="q-c2_tf_6" data-question-text="6. True or False: A supercomputer is generally slower and less powerful than a mainframe.">
+                    <p class="text-lg font-medium text-gray-900">6. True or False: A supercomputer is generally slower and less powerful than a mainframe.</p>
+                    <div class="flex gap-4" data-group="c2_tf_6">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_6" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_6" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C2-TF 7 -->
+                <div class="space-y-3" id="q-c2_tf_7" data-question-text="7. True or False: A Tablet PC is categorized as a mobile computer.">
+                    <p class="text-lg font-medium text-gray-900">7. True or False: A Tablet PC is categorized as a mobile computer.</p>
+                    <div class="flex gap-4" data-group="c2_tf_7">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_7" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_7" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C2-TF 8 -->
+                <div class="space-y-3" id="q-c2_tf_8" data-question-text="8. True or False: A utility program is a type of application software.">
+                    <p class="text-lg font-medium text-gray-900">8. True or False: A utility program is a type of application software.</p>
+                    <div class="flex gap-4" data-group="c2_tf_8">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_8" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_8" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C2-TF 9 -->
+                <div class="space-y-3" id="q-c2_tf_9" data-question-text="9. True or False: A scanner is an output device.">
+                    <p class="text-lg font-medium text-gray-900">9. True or False: A scanner is an output device.</p>
+                    <div class="flex gap-4" data-group="c2_tf_9">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_9" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_9" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- C2-TF 10 -->
+                <div class="space-y-3" id="q-c2_tf_10" data-question-text="10. True or False: A hard disk drive is a type of storage device.">
+                    <p class="text-lg font-medium text-gray-900">10. True or False: A hard disk drive is a type of storage device.</p>
+                    <div class="flex gap-4" data-group="c2_tf_10">
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_10" value="T" class="sr-only" data-option-text="True">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>True</span>
+                        </label>
+                        <label class="option-button-label flex items-center w-full p-3 rounded-lg border-2 border-gray-300 text-left bg-white text-gray-700 hover:bg-gray-100 cursor-pointer">
+                            <input type="radio" name="c2_tf_10" value="F" class="sr-only" data-option-text="False">
+                            <span class="custom-radio w-5 h-5 border-2 border-gray-400 rounded-full mr-3 grid place-items-center flex-shrink-0">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 opacity-0 transition-opacity"></span>
+                            </span>
+                            <span>False</span>
+                        </label>
+                    </div>
+                </div>
+                
+            </section>
+
+            <!-- Submit Button -->
+            <div class="pt-8 border-t border-gray-200">
+                <button type="button" id="submitBtn" class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-300 ease-in-out text-lg">
+                    Check My Answers
+                </button>
+            </div>
+
+        </form>
+
+        <!-- NEW Results Container -->
+        <div id="resultsContainer" class="bg-white p-6 sm:p-8 rounded-2xl shadow-lg space-y-8 hidden">
+            <!-- Results Header -->
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Quiz Results</h2>
+                <div id="score" class="text-5xl font-extrabold text-blue-600"></div>
+                <div id="scoreText" class="text-lg text-gray-600 font-medium"></div>
+            </div>
+
+            <!-- Answer Review Section -->
+            <div class="space-y-6">
+                <h3 class="text-2xl font-semibold text-gray-800 border-b-2 border-gray-200 pb-3">Answer Review</h3>
+                <div id="answerReviewList" class="space-y-4">
+                    <!-- Dynamic content will be injected here by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Try Again Button -->
+            <div class="pt-6 border-t border-gray-200">
+                <button type="button" id="resetBtn" class="w-full bg-gray-600 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-300 transition duration-300 ease-in-out text-lg">
+                    Try Again
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Define correct answers and their full text for review
+        const correctAnswers = {
+            // Chapter 1
+            'c1_mcq_1': { 'value': 'B', 'text': 'B) Input, Processing, Output, Storage' },
+            'c1_mcq_2': { 'value': 'D', 'text': 'D) Reliability' },
+            'c1_mcq_3': { 'value': 'B', 'text': 'B) Information' },
+            'c1_mcq_4': { 'value': 'C', 'text': 'C) Health Risks' },
+            'c1_mcq_5': { 'value': 'A', 'text': 'A) Instructions stored in its own memory' },
+            'c1_mcq_6': { 'value': 'C', 'text': 'C) People' },
+            'c1_mcq_7': { 'value': 'A', 'text': 'A) Finance' },
+            'c1_mcq_8': { 'value': 'D', 'text': 'D) Networks' },
+            'c1_mcq_9': { 'value': 'B', 'text': 'B) Computer-Aided Manufacturing' },
+            'c1_mcq_10': { 'value': 'A', 'text': 'A) Data' },
+            'c1_tf_1': { 'value': 'T', 'text': 'True' },
+            'c1_tf_2': { 'value': 'T', 'text': 'True' },
+            'c1_tf_3': { 'value': 'T', 'text': 'True' },
+            'c1_tf_4': { 'value': 'F', 'text': 'False' },
+            'c1_tf_5': { 'value': 'F', 'text': 'False' },
+            'c1_tf_6': { 'value': 'T', 'text': 'True' },
+            'c1_tf_7': { 'value': 'F', 'text': 'False' },
+            'c1_tf_8': { 'value': 'T', 'text': 'True' },
+            'c1_tf_9': { 'value': 'F', 'text': 'False' },
+            'c1_tf_10': { 'value': 'T', 'text': 'True' },
+            // Chapter 2
+            'c2_mcq_1': { 'value': 'B', 'text': 'B) Hardware' },
+            'c2_mcq_2': { 'value': 'C', 'text': 'C) Keyboard' },
+            'c2_mcq_3': { 'value': 'C', 'text': 'C) Operating Systems' },
+            'c2_mcq_4': { 'value': 'C', 'text': 'C) Supercomputer' },
+            'c2_mcq_5': { 'value': 'B', 'text': 'B) Output Devices' },
+            'c2_mcq_6': { 'value': 'A', 'text': 'A) Embedded Computer' },
+            'c2_mcq_7': { 'value': 'A', 'text': 'A) Server' },
+            'c2_mcq_8': { 'value': 'B', 'text': 'B) Output Device' },
+            'c2_mcq_9': { 'value': 'C', 'text': 'C) Application Software' },
+            'c2_mcq_10': { 'value': 'C', 'text': 'C) Communications Device' },
+            'c2_tf_1': { 'value': 'F', 'text': 'False' },
+            'c2_tf_2': { 'value': 'T', 'text': 'True' },
+            'c2_tf_3': { 'value': 'F', 'text': 'False' },
+            'c2_tf_4': { 'value': 'T', 'text': 'True' },
+            'c2_tf_5': { 'value': 'F', 'text': 'False' },
+            'c2_tf_6': { 'value': 'F', 'text': 'False' },
+            'c2_tf_7': { 'value': 'T', 'text': 'True' },
+            'c2_tf_8': { 'value': 'F', 'text': 'False' },
+            'c2_tf_9': { 'value': 'F', 'text': 'False' },
+            'c2_tf_10': { 'value': 'T', 'text': 'True' },
+        };
+
+        const questionIDs = Object.keys(correctAnswers);
+        const totalQuestions = questionIDs.length;
+
+        // Get DOM elements
+        const quizForm = document.getElementById('quizForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const answerReviewList = document.getElementById('answerReviewList');
+        const resetBtn = document.getElementById('resetBtn');
+        const scoreEl = document.getElementById('score');
+        const scoreTextEl = document.getElementById('scoreText');
+
+        // --- Event Listener for Option Clicks ---
+        quizForm.addEventListener('click', (e) => {
+            const label = e.target.closest('.option-button-label');
+            if (!label) return; // Exit if it wasn't an option label
+            
+            // Prevent changing answers after submission
+            if (quizForm.dataset.submitted === 'true') {
+                e.preventDefault();
+                return;
+            }
+
+            const radio = label.querySelector('input[type="radio"]');
+            if (radio) {
+                // Manually check the radio button
+                radio.checked = true;
+
+                // Find all labels in this group and remove the selection class
+                const groupName = radio.name;
+                const allLabelsInGroup = document.querySelectorAll(`input[name="${groupName}"]`);
+                allLabelsInGroup.forEach(r => {
+                    r.closest('.option-button-label').classList.remove('selected-option-label');
+                });
+
+                // Add selection class to the clicked label
+                label.classList.add('selected-option-label');
+            }
+        });
+
+        // --- Event Listener for Submit Button ---
+        submitBtn.addEventListener('click', () => {
+            let score = 0;
+            const formData = new FormData(quizForm);
+            quizForm.dataset.submitted = 'true'; // Mark quiz as submitted
+            let reviewHtml = ''; // To build the answer review list
+
+            // Loop through each question to check answers
+            questionIDs.forEach(qId => {
+                const userAnswerValue = formData.get(qId);
+                const correctAnswer = correctAnswers[qId];
+                const questionDiv = document.getElementById(`q-${qId}`);
+                const questionText = questionDiv.dataset.questionText;
+
+                let userAnswerText = "You did not answer this question.";
+                let isUserCorrect = false;
+
+                // Find all radio buttons for this question
+                const optionRadios = document.querySelectorAll(`input[name="${qId}"]`);
+
+                optionRadios.forEach(radio => {
+                    const label = radio.closest('.option-button-label');
+                    const labelValue = radio.value;
+                    const isCorrect = (labelValue === correctAnswer.value);
+                    const isSelected = radio.checked;
+
+                    // Clear any previous selection styles
+                    label.classList.remove('selected-option-label');
+
+                    if (isCorrect) {
+                        label.classList.add('correct-answer-style');
+                    }
+                    
+                    if (isSelected) {
+                        userAnswerText = radio.dataset.optionText; // Get text from data attribute
+                        if (!isCorrect) {
+                            label.classList.add('incorrect-answer-style');
+                        } else {
+                            isUserCorrect = true;
+                            score++;
+                        }
+                    }
+                });
+
+                // --- Build the Answer Review HTML ---
+                let questionClass = isUserCorrect ? 'results-question-correct' : 'results-question-incorrect';
+                
+                reviewHtml += `
+                    <div class="rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                        <p class="p-3 border-l-4 ${questionClass} font-medium text-gray-800">${questionText}</p>
+                        <div class="p-3 results-answer-review space-y-1">
+                `;
+
+                if (userAnswerValue) {
+                     reviewHtml += `<p class="text-sm text-gray-700">Your answer: <span class="font-medium ${isUserCorrect ? 'text-green-700' : 'text-red-700'}">${userAnswerText}</span></p>`;
+                } else {
+                    reviewHtml += `<p class="text-sm font-medium text-red-700">You did not answer this question.</p>`;
+                }
+                
+                if (!isUserCorrect) {
+                    reviewHtml += `<p class="text-sm text-gray-700">Correct answer: <span class="font-medium text-green-700">${correctAnswer.text}</span></p>`;
+                }
+
+                reviewHtml += `
+                        </div>
+                    </div>
+                `;
+            });
+
+
+            // Display score in results page
+            scoreEl.textContent = `${score} / ${totalQuestions}`;
+            let scoreMessage = "Good job! Keep reviewing.";
+            if (score === totalQuestions) {
+                scoreMessage = "Perfect score! You're an expert!";
+            } else if (score < totalQuestions / 2) {
+                scoreMessage = "Keep practicing! Review the summaries and try again.";
+            }
+            scoreTextEl.textContent = scoreMessage;
+
+            // Inject the review HTML
+            answerReviewList.innerHTML = reviewHtml;
+            
+            // Hide quiz form, show results
+            quizForm.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+
+            // Scroll to the top of the viewport to see results
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // --- Function to Reset Quiz ---
+        function resetQuiz() {
+            quizForm.dataset.submitted = 'false'; // Unmark quiz
+            
+            // Uncheck all radio buttons
+            const allRadios = quizForm.querySelectorAll('input[type="radio"]');
+            allRadios.forEach(radio => {
+                radio.checked = false;
+            });
+
+            // Clear all button styles
+            const allLabels = quizForm.querySelectorAll('.option-button-label');
+            allLabels.forEach(label => {
+                label.classList.remove('selected-option-label', 'correct-answer-style', 'incorrect-answer-style');
+            });
+
+            // Hide results, show quiz
+            resultsContainer.classList.add('hidden');
+            quizForm.classList.remove('hidden');
+
+            // Clear the dynamically generated review list
+            answerReviewList.innerHTML = '';
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // --- Event Listener for Reset Button ---
+        resetBtn.addEventListener('click', resetQuiz);
+
+    </script>
+
+</body>
+</html>
+
